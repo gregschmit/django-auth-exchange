@@ -20,7 +20,7 @@ setup(
     include_package_data=True,
     package_data={'django_auth_exchange': ['VERSION_STAMP']},
     description='A reusable Django app for authenticating against Exchange servers.',
-    long_description="long_description",
+    long_description=long_description,
     install_requires=['Django>=2', 'exchangelib'],
     url='https://github.com/gregschmit/django-auth-exchange',
     author='Gregory N. Schmit',
