@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 import exchangelib as el
 from .settings import get_setting
 try:
-    from auth_exchange_organizations.models import DomainOrganization
+    from django_auth_exchange_organizations.models import DomainOrganization
 except (ModuleNotFoundError, NameError):
     DomainOrganization = False
 
