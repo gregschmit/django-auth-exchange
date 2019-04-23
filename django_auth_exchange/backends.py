@@ -13,12 +13,12 @@ username_field = user_model.USERNAME_FIELD or 'username'
 
 class ExchangeAuthBackend:
     """
-    This authentication backend uses `exchangelib` to authenticate against the
+    This authentication backend uses ``exchangelib`` to authenticate against the
     Exchange or Office365 server.
 
-    By default, the `authenticate` method creates `User` objects for usernames
-    that don't already exist in the database.  Subclasses can disable this
-    behavior by setting the `create_unknown_user` attribute to `False`.
+    By default, the ``authenticate`` method creates ``User`` objects for
+    usernames that don't already exist in the database.  Subclasses can disable
+    this behavior by setting the ``create_unknown_user`` attribute to ``False``.
     """
 
     # Create a User object if not already in the database?
@@ -26,8 +26,8 @@ class ExchangeAuthBackend:
 
     def authenticate(self, request, username, password):
         """
-        Check for the format of the username (dom\\user vs user@dom), then
-        authenticate, and if successful, get or create the user object and
+        Check for the format of the username (``dom\\user`` vs ``user@dom``),
+        then authenticate, and if successful, get or create the user object and
         return it.
         """
         username = username.lower()
