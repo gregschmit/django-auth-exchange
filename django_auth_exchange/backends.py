@@ -7,20 +7,18 @@ except (ModuleNotFoundError, NameError):
     DomainOrganization = False
 
 
-UserModel = get_user_model()
-username_field = UserModel.USERNAME_FIELD or 'username'
+user_model = get_user_model()
+username_field = user_model.USERNAME_FIELD or 'username'
 
 
 class ExchangeAuthBackend:
     """
-    This backend is to be used in conjunction with the `RemoteUserMiddleware`
-    found in the middleware module of this package, and is used when the server
-    is handling authentication outside of Django.
+    This authentication backend uses `exchangelib` to authenticate against the
+    Exchange or Office365 server.
 
-    By default, the ``authenticate`` method creates `User` objects for
-    usernames that don't already exist in the database.  Subclasses can disable
-    this behavior by setting the `create_unknown_user` attribute to
-    `False`.
+    By default, the `authenticate` method creates `User` objects for usernames
+    that don't already exist in the database.  Subclasses can disable this
+    behavior by setting the `create_unknown_user` attribute to `False`.
     """
 
     # Create a User object if not already in the database?
@@ -75,7 +73,6 @@ class ExchangeAuthBackend:
                 'autodiscover': True,
                 'access_type': el.DELEGATE
             }
-            print(acc_opts)
             try:
                 acc = el.Account(**acc_opts)
             except (el.errors.UnauthorizedError, el.errors.AutoDiscoverFailed):
@@ -85,7 +82,6 @@ class ExchangeAuthBackend:
                 'credentials': cred,
                 'server': domain_server,
             }
-            print(cfg_opts)
             try:
                 cfg = el.Configuration(**cfg_opts)
             except (el.errors.UnauthorizedError, el.errors.AutoDiscoverFailed):
@@ -97,7 +93,6 @@ class ExchangeAuthBackend:
                 'autodiscover': False,
                 'access_type': el.DELEGATE
             }
-            print(acc_opts)
             try:
                 acc = el.Account(**acc_opts)
             except (el.errors.UnauthorizedError, el.errors.AutoDiscoverFailed):
@@ -106,10 +101,10 @@ class ExchangeAuthBackend:
 
         # auth successful, get or create local user
         try:
-            u = UserModel.objects.get(**{username_field: c_username})
-        except UserModel.DoesNotExist:
+            u = user_model.objects.get(**{username_field: c_username})
+        except user_model.DoesNotExist:
             if self.create_unknown_user:
-                u = UserModel.objects.create(**{username_field: c_username})
+                u = user_model.objects.create(**{username_field: c_username})
                 if DomainOrganization:
                     DomainOrganization.associate_new_user(u, dom)
             else:
@@ -127,6 +122,6 @@ class ExchangeAuthBackend:
 
     def get_user(self, user_id):
         try:
-            return UserModel.objects.get(pk=user_id)
-        except UserModel.DoesNotExist:
+            return user_model.objects.get(pk=user_id)
+        except user_model.DoesNotExist:
             return None
